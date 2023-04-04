@@ -18,8 +18,7 @@ pip install .
 
 ### 鉴权登录
 
-目前的实现只支持tenant（租户）的登录方式，要进行鉴权的话，需要通过飞书开发者平台创建一个应用，拿到应用对应的app id和app secret key才能正常登录。（目前陶建龙同志已经申请了一个app，有需要有的直接找找他）
-
+目前的实现只支持tenant（租户）的登录方式，要进行鉴权的话，需要通过飞书开发者平台创建一个应用，拿到应用对应的app id和app secret key才能正常登录。
 
 ```python
 >>> import feishu_sdk
