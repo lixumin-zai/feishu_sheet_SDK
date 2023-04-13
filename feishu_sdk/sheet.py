@@ -36,7 +36,7 @@ class FeishuImage(SuiteBase):
     @property
     def image_name(self):
         if self.img_path is None:
-            return uuid4().hex
+            return f"{uuid4().hex}.png"
         else:
             return os.path.basename(self.img_path)
 
