@@ -47,8 +47,12 @@ class FeishuImage(SuiteBase):
         elif self.img_path is not None:
             with open(self.img_path, "rb") as rfile:
                 self._img_bytes = rfile.read()
-
             return self._img_bytes
+        elif self.file_token is not None:
+            download_url = self.download_url.substitute({"fileToken": self.file_token})
+            resp = self._sess.get(download_url)
+            self._img_bytes = resp.content
+            return resp.content
         else:
             return b""
 
