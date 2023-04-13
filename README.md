@@ -4,14 +4,10 @@
 
 ## Getting Started
 
-该项目以pip包的方式进行打包和管理，在使用时不要使用submodule的方式引入依赖，直接通过pip下载就行
-
 ### Installation
 
 ```shell
-git clone git@gitee.com:xizi_ai/feishu_sdk.git
-cd feishu_sdk
-pip install .
+pip install git+https://github.com/lixumin-zai/feishu_sheet_SDK.git
 ```
 
 ## Usage
@@ -90,13 +86,5 @@ b""
 >>> sheet["C2"] = FeishuImage("./test/test.png")  # 将./test/test.png上传
 >>> sheet["C2"] = FeishuImage(open("./test/test.png", "rb").read())  # 支持二进制上传
 ```
-
-
-## Contact
-
-* 林东生：
-    * 进行框架的初步搭建
-
-## Reference
 
 * [飞书API开发文档](https://open.feishu.cn/document/ukTMukTMukTM/uATMzUjLwEzM14CMxMTN/overview)
