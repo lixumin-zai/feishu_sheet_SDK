@@ -69,7 +69,7 @@ class FeishuImage(SuiteBase):
     def load(cls, data):
         return FeishuImage(file_token=data["fileToken"])
 
-    def donwload(self, save_path: str = None, auto_suffix: bool = False):
+    def download(self, save_path: str = None, auto_suffix: bool = False):
         if self.file_token is None:
             raise ValueError("无效fileToken，无法下载")
 
