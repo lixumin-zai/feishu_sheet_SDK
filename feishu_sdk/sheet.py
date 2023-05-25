@@ -16,6 +16,53 @@ from .suite_base import SuiteBase
 logger = logging.getLogger(__name__)
 
 
+class FeishuAttachment(SuiteBase):
+    download_url = Template(
+        # https://internal-api-drive-stream.feishu.cn/space/api/box/stream/download/all/XqjxbeGgZow0wOxEL0XcY2YunAc/
+        urljoin(FEIHSU_BASE_URL, "drive/v1/medias/$fileToken/download"),
+    )
+    def __init__(
+        self,
+        file_token: str = None,
+        file_path: str = None,
+        file_bytes: bytes = None,
+        file_suffix: str = None,
+    ) -> None:
+        super().__init__()
+
+        self.file_token = file_token
+        self.file_path = file_path
+        self.file_bytes = file_bytes
+        self.file_suffix = file_suffix
+
+    @classmethod
+    def load(cls, data):
+        return FeishuAttachment(file_token=data["fileToken"], file_suffix=data["mimeType"].split("/")[-1])
+    
+    @property
+    def file_name(self):
+        pass
+
+    def download(self, save_path: str = None):
+        if self.file_token is None:
+            raise ValueError("无效fileToken，无法下载")
+        
+        download_url = self.download_url.substitute({"fileToken": self.file_token})
+        print(download_url)
+        resp = self._sess.get(download_url)
+        print(resp)
+        self._img_bytes = resp.content
+
+        if save_path is None:
+            with open(f"./{uuid4().hex}{self.file_suffix}", "wb") as wfile:
+                wfile.write(resp.content)
+        else:
+            with open(f"{save_path}", "wb") as wfile:
+                wfile.write(resp.content)
+
+    def __repr__(self) -> str:
+        return f"<FeishuAttachment fileToken:{self.file_token}>"
+
 class FeishuImage(SuiteBase):
     download_url = Template(
         urljoin(FEIHSU_BASE_URL, "drive/v1/medias/$fileToken/download"),
@@ -149,7 +196,7 @@ class FeishuSheet(SuiteBase):
         """通过接口获取的原始表格数据"""
         if self._data is None:
             self.refresh()
-
+        
         return self._data
 
     @property
@@ -169,7 +216,7 @@ class FeishuSheet(SuiteBase):
     def refresh(self):
         """刷新表格数据"""
         r = self._sess.get(url=self.sheet_read_api)
-
+        
         try:
             r.raise_for_status()
         except Exception as e:
@@ -190,6 +237,10 @@ class FeishuSheet(SuiteBase):
         if isinstance(item, dict):
             if item.get("type") == "embed-image":
                 return FeishuImage.load(item)
+        if isinstance(item, list):
+            for i in item:
+                if i.get("type") == "attachment":
+                    return FeishuAttachment.load(i)
 
         return item
 
