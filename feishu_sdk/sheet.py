@@ -42,7 +42,16 @@ class FeishuAttachment(SuiteBase):
     @property
     def file_name(self):
         pass
-
+        
+    @property
+    def file_bytes(self):
+        if self.file_token is None:
+            raise ValueError("无效fileToken，无法下载")
+        download_url = self.download_url.substitute({"fileToken": self.file_token})
+        resp = self._sess.get(download_url)
+        self.file_bytes = resp.content
+        return resp.content
+        
     def download(self, save_path: str = None):
         if self.file_token is None:
             raise ValueError("无效fileToken，无法下载")
