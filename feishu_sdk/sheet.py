@@ -32,7 +32,7 @@ class FeishuAttachment(SuiteBase):
 
         self.file_token = file_token
         self.file_path = file_path
-        self.file_bytes = file_bytes
+        self._file_bytes = file_bytes
         self.file_suffix = file_suffix
 
     @classmethod
@@ -49,7 +49,7 @@ class FeishuAttachment(SuiteBase):
             raise ValueError("无效fileToken，无法下载")
         download_url = self.download_url.substitute({"fileToken": self.file_token})
         resp = self._sess.get(download_url)
-        self.file_bytes = resp.content
+        self._file_bytes = resp.content
         return resp.content
         
     def download(self, save_path: str = None):
