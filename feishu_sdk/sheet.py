@@ -27,6 +27,7 @@ class FeishuAttachment(SuiteBase):
         file_path: str = None,
         file_bytes: bytes = None,
         file_suffix: str = None,
+        file_name: str = None,
     ) -> None:
         super().__init__()
 
@@ -34,14 +35,15 @@ class FeishuAttachment(SuiteBase):
         self.file_path = file_path
         self._file_bytes = file_bytes
         self.file_suffix = file_suffix
+        self._file_name = file_name
 
     @classmethod
     def load(cls, data):
-        return FeishuAttachment(file_token=data["fileToken"], file_suffix=data["mimeType"].split("/")[-1])
+        return FeishuAttachment(file_token=data["fileToken"], file_suffix=data["mimeType"].split("/")[-1], file_name=data["text"])
     
     @property
     def file_name(self):
-        pass
+        return self._file_name
         
     @property
     def file_bytes(self):
