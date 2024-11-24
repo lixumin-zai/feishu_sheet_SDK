@@ -202,6 +202,38 @@ class FeishuSheet(SuiteBase):
             {"sheet_token": self.sheet_token},
         )
 
+    @classmethod
+    def create_sheet(cls, sheet_token, sheet_name):
+
+        tmp_sheet = cls(sheet_token=sheet_token, sheet_id="0")
+
+        r = tmp_sheet._sess.post(
+            url=f"https://open.feishu.cn/open-apis/sheets/v2/spreadsheets/{sheet_token}/sheets_batch_update",
+            json={
+                "requests": [
+                    {
+                        "addSheet": {
+                            "properties": {
+                                "title": sheet_name,
+                                "index": 1,
+                            },
+                        },
+                    },
+                ],
+            },
+        )
+
+        r.raise_for_status()
+
+        data = r.json()
+        if data["code"] == 0:
+            return cls(
+                sheet_token=sheet_token,
+                sheet_id=data["data"]["replies"][0]["addSheet"]["properties"]["sheetId"],
+            )
+        else:
+            raise ValueError(f"表格创建失败，失败原因为: {data['msg']}")
+            
     @property
     def data(self):
         """通过接口获取的原始表格数据"""
